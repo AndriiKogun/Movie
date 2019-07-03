@@ -46,6 +46,13 @@ class BaseMainViewController: UIViewController {
         return activityIndicator
     }()
     
+    private var hasNotch: Bool {
+        guard #available(iOS 11.0, *), let bottomPadding = UIApplication.shared.keyWindow?.safeAreaInsets.top, bottomPadding > 24 else {
+            return false
+        }
+        return true
+    }
+    
     //MARK: - Initialization
     @objc init() {
         super.init(nibName: nil, bundle: nil)
@@ -183,10 +190,16 @@ extension BaseMainViewController: UICollectionViewDelegate, UICollectionViewData
         let contentOffset = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
         let diffHeight = contentHeight - contentOffset
-        let frameHeight = scrollView.bounds.size.height
-        let pullHeight = abs(diffHeight - frameHeight)
+        let frameHeight = scrollView.frame.size.height
+        let pullHeight = Float(abs(diffHeight - frameHeight))
 
-        if pullHeight == 0.0 && movies.count < page?.totalResults ?? 0 {
+        var finalHeight: Float = 0.0
+        
+        if hasNotch {
+            finalHeight = 34.0
+        }
+        
+        if pullHeight == finalHeight && movies.count < page?.totalResults ?? 0 {
             isLoading = true
             footerView?.startAnimate()
             currentPage = currentPage + 1
