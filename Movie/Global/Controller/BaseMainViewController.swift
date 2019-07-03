@@ -20,11 +20,6 @@ class BaseMainViewController: UIViewController {
     private lazy var flowLayout: UICollectionViewFlowLayout = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.sectionInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
-        if isPad {
-            flowLayout.itemSize = CGSize(width: view.frame.width / 3, height: 300)
-        } else {
-            flowLayout.itemSize = CGSize(width: view.frame.width, height: 200)
-        }
         return flowLayout
     }()
     
@@ -83,9 +78,12 @@ class BaseMainViewController: UIViewController {
         if UIApplication.shared.statusBarOrientation.isLandscape {
             flowLayout.itemSize = CGSize(width: (view.frame.width / 2) - 6, height: 200)
         } else {
-            flowLayout.itemSize = CGSize(width: view.frame.width, height: 200)
+            if isPad {
+                flowLayout.itemSize = CGSize(width: (view.frame.width / 2) - 6, height: 200)
+            } else {
+                flowLayout.itemSize = CGSize(width: view.frame.width, height: 200)
+            }
         }
-        
         flowLayout.invalidateLayout()
     }
     
